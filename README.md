@@ -4,7 +4,8 @@ iPhone 用の 30分活動記録 PWA。スタートで開始時刻を記録 → 3
 活動内容（分類＋自由記述）を入れて保存。カレンダーと統計で振り返る。タイマーなしの手入力もできる。
 
 ## 構成
-- `docs/` … 公開するアプリ本体（GitHub Pages で /docs を配信する想定。**まだ公開していない**）
+- 公開先: https://jawhook-hash.github.io/katsu/ （リポジトリ jawhook-hash/katsu・public、Pages は main の /docs。push は毎回確認）
+- `docs/` … 公開するアプリ本体
   - `index.html` / `style.css` / `app.js` … 画面と動き
   - `sw.js` … アプリ本体だけをキャッシュ。**部品を変えたら `CACHE` の番号を上げる**
   - `manifest.json`・`icon-*.png`
@@ -46,3 +47,4 @@ iPhone 用の 30分活動記録 PWA。スタートで開始時刻を記録 → 3
 ## 経緯
 - 2026-10-24 試作（音を流し続ける方式）→ 同日、ショートカット方式＋手入力に作り直し。PC のブラウザで
   タイマー・入力・手入力・カレンダー・統計を確認。**iPhone 実機（ショートカット呼び出し・通知）は未確認**
+- 2026-10-25 GitHub Pages で公開（表示・Service Worker・アイコン・manifest を確認）
