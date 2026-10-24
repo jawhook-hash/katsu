@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="活">
+<meta name="theme-color" content="#1c5cab">
+<title>活</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<main>
+  <!-- タイマー -->
+  <section id="view-timer" class="view">
+    <div id="test-banner" class="banner" hidden></div>
+
+    <div id="timer-idle">
+      <p class="lead">30分の活動を始めましょう</p>
+      <button id="btn-start" class="big-btn">スタート</button>
+      <p id="start-hint" class="hint"></p>
+      <div id="today-summary" class="card"></div>
+      <button class="add-btn" data-add>＋ 記録を追加（タイマーなし）</button>
+    </div>
+
+    <div id="timer-running" hidden>
+      <div class="ring-wrap">
+        <svg viewBox="0 0 200 200" class="ring">
+          <circle cx="100" cy="100" r="88" class="ring-bg"/>
+          <circle cx="100" cy="100" r="88" class="ring-fg" id="ring-fg"/>
+        </svg>
+        <div class="ring-text">
+          <div id="remain" class="remain">30:00</div>
+          <div id="run-range" class="sub"></div>
+        </div>
+      </div>
+      <button id="btn-abort" class="text-btn">中止する</button>
+    </div>
+
+    <div id="timer-done" hidden>
+      <h2>おつかれさまでした</h2>
+      <p id="done-range" class="sub"></p>
+
+      <label class="field-label">分類</label>
+      <div id="cat-chips" class="chips"></div>
+
+      <label class="field-label" for="done-text">何をしましたか</label>
+      <textarea id="done-text" rows="4" placeholder="例：英単語 Unit 5 を復習"></textarea>
+
+      <button id="btn-save" class="big-btn">記録する</button>
+      <button id="btn-discard" class="text-btn">記録しないで捨てる</button>
+    </div>
+  </section>
+
+  <!-- カレンダー -->
+  <section id="view-cal" class="view" hidden>
+    <div class="nav-row">
+      <button id="cal-prev" class="nav-btn" aria-label="前の月">‹</button>
+      <h2 id="cal-title"></h2>
+      <button id="cal-next" class="nav-btn" aria-label="次の月">›</button>
+    </div>
+    <div id="cal-grid" class="cal-grid"></div>
+    <p id="cal-month-sum" class="sub center"></p>
+    <div id="cal-day" class="card" hidden>
+      <h3 id="cal-day-title"></h3>
+      <div id="cal-day-list"></div>
+      <button class="add-btn" data-add="cal">＋ この日に記録を追加</button>
+    </div>
+  </section>
+
+  <!-- 統計 -->
+  <section id="view-stats" class="view" hidden>
+    <div class="seg" id="stats-seg">
+      <button data-p="week">週</button>
+      <button data-p="month" class="on">月</button>
+      <button data-p="year">年</button>
+      <button data-p="all">全期間</button>
+    </div>
+    <div class="nav-row">
+      <button id="st-prev" class="nav-btn" aria-label="前へ">‹</button>
+      <h2 id="st-title"></h2>
+      <button id="st-next" class="nav-btn" aria-label="次へ">›</button>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="tile-v" id="t-hours"></div><div class="tile-l">合計時間</div></div>
+      <div class="tile"><div class="tile-v" id="t-count"></div><div class="tile-l">回数</div></div>
+      <div class="tile"><div class="tile-v" id="t-days"></div><div class="tile-l">活動した日</div></div>
+      <div class="tile"><div class="tile-v" id="t-avg"></div><div class="tile-l">活動日の平均</div></div>
+    </div>
+    <div class="card">
+      <h3>推移</h3>
+      <p id="bar-cap" class="cap"></p>
+      <div id="bar-chart" class="bars"></div>
+      <div id="bar-axis" class="bar-axis"></div>
+    </div>
+    <div class="card">
+      <h3>分類別</h3>
+      <div id="cat-breakdown"></div>
+    </div>
+    <div class="card">
+      <h3>時間帯（開始時刻）</h3>
+      <p id="hour-cap" class="cap"></p>
+      <div id="hour-chart" class="bars hours"></div>
+      <div id="hour-axis" class="bar-axis"></div>
+    </div>
+    <div class="card">
+      <h3>連続記録</h3>
+      <p id="streak"></p>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section id="view-set" class="view" hidden>
+    <div class="card">
+      <h3>30分後の知らせ（ショートカット）</h3>
+      <p class="hint">スタートを押すと、この名前のショートカットを実行します。空欄にすると呼びません。作り方は README を見てください。</p>
+      <div class="row">
+        <input id="sc-name" type="text" maxlength="40">
+        <button id="sc-save" class="small-btn">保存</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>分類</h3>
+      <ul id="cat-list" class="cat-list"></ul>
+      <div class="row">
+        <input id="cat-new" type="text" placeholder="新しい分類" maxlength="20">
+        <button id="cat-add" class="small-btn">追加</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>記録の控え</h3>
+      <p class="hint">ホーム画面から「活」を消すと記録も消えます。ときどき書き出して「ファイル」に保存してください。</p>
+      <div class="row">
+        <button id="btn-export" class="small-btn">書き出す</button>
+        <label class="small-btn file-btn">読み込む<input id="file-import" type="file" accept=".json,application/json" hidden></label>
+      </div>
+    </div>
+    <div class="card">
+      <h3>情報</h3>
+      <pre id="info" class="info"></pre>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button data-v="timer" class="on">タイマー</button>
+  <button data-v="cal">カレンダー</button>
+  <button data-v="stats">統計</button>
+  <button data-v="set">設定</button>
+</nav>
+
+<!-- 記録の追加・編集 -->
+<dialog id="dlg-edit">
+  <form method="dialog">
+    <h3 id="edit-title"></h3>
+    <div class="when">
+      <label>日付<input id="edit-date" type="date" required></label>
+      <label>開始<input id="edit-time" type="time" required></label>
+    </div>
+    <label class="field-label" for="edit-min">長さ（分）</label>
+    <div class="row">
+      <input id="edit-min" type="number" min="1" max="720" step="1" inputmode="numeric" class="min-input">
+      <div id="edit-quick" class="chips">
+        <button type="button" class="chip" data-min="15">15</button>
+        <button type="button" class="chip" data-min="30">30</button>
+        <button type="button" class="chip" data-min="45">45</button>
+        <button type="button" class="chip" data-min="60">60</button>
+      </div>
+    </div>
+    <label class="field-label">分類</label>
+    <div id="edit-chips" class="chips"></div>
+    <label class="field-label" for="edit-text">内容</label>
+    <textarea id="edit-text" rows="4"></textarea>
+    <div class="row end">
+      <button id="edit-delete" value="delete" class="text-btn danger" formnovalidate>削除</button>
+      <button value="cancel" class="small-btn ghost" formnovalidate>やめる</button>
+      <button value="save" class="small-btn">保存</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="app.js"></script>
+</body>
+</html>
